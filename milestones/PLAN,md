@@ -1,0 +1,219 @@
+# 🧱 HTTP Server in C — Project Plan
+
+**Goal:**
+
+Build a minimal but real HTTP/1.1 server using **POSIX sockets**, structured like a real systems project.
+
+---
+
+## 0️⃣ Project Rules (important)
+
+- C99
+- No external libraries
+- Linux / macOS
+- Compile with `Wall -Wextra -Werror`
+- One responsibility per module
+- Every milestone must compile & run
+
+---
+
+## 📁 Project Structure
+
+```
+http-server-c/
+├── Makefile
+├── README.md
+├── include/
+│   ├── server.h
+│   ├── socket.h
+│   ├── http.h
+│   ├── router.h
+│   └── utils.h
+├── src/
+│   ├── main.c
+│   ├── server.c
+│   ├── socket.c
+│   ├── http.c
+│   ├── router.c
+│   └── utils.c
+└── www/
+    ├── index.html
+    └── 404.html
+
+```
+
+---
+
+## 🟩 Milestone 1 — TCP Server Core
+
+**Goal:** accept a single client and reply.
+
+### Tasks
+
+- Create socket
+- Bind to port
+- Listen
+- Accept connection
+- Read bytes
+- Write bytes
+- Close connection
+
+### Output
+
+- `curl http://localhost:8080` works
+- Always returns `"Hello World"`
+
+---
+
+## 🟩 Milestone 2 — HTTP Parsing (Minimal)
+
+**Goal:** understand HTTP, not fully implement it.
+
+### Implement
+
+```c
+struct http_request {
+    char method[8];
+    char path[256];
+};
+```
+
+### Tasks
+
+- Parse request line:
+    
+    ```
+    GET /index.html HTTP/1.1
+    
+    ```
+    
+- Ignore headers (for now)
+- Reject non-GET methods
+
+### Output
+
+- Correct method & path extraction
+
+---
+
+## 🟩 Milestone 3 — Response Builder
+
+**Goal:** generate valid HTTP responses.
+
+### Implement
+
+```c
+void send_response(int fd, int status, const char *body);
+```
+
+### Handle
+
+- `200 OK`
+- `404 Not Found`
+- Proper headers
+- Correct `Content-Length`
+
+---
+
+## 🟩 Milestone 4 — Static File Server
+
+**Goal:** serve real files from disk.
+
+### Tasks
+
+- Map URL → file path
+- Prevent directory traversal (`../`)
+- Read file
+- Send contents
+- Serve HTML files
+
+### Output
+
+- Browser loads `index.html`
+
+---
+
+## 🟩 Milestone 5 — Router
+
+**Goal:** basic routing logic.
+
+### Routes
+
+- `/` → `index.html`
+- `/health` → plain text
+- `/echo` → returns request info
+
+### Implement
+
+```c
+typedef void (*route_handler)(int client_fd);
+```
+
+---
+
+## 🟩 Milestone 6 — Multi-Client Support (SELECT)
+
+**Goal:** handle multiple clients without threads.
+
+### Tasks
+
+- Use `select()`
+- Track active sockets
+- Non-blocking I/O
+- Clean disconnect handling
+
+### Output
+
+- Multiple browsers connect simultaneously
+
+---
+
+## 🟩 Milestone 7 — Robustness
+
+**Goal:** make it stable.
+
+### Tasks
+
+- Handle malformed requests
+- Handle partial reads
+- Avoid crashes
+- Clean shutdown
+
+---
+
+## 🟩 Milestone 8 — Logging & Errors
+
+**Goal:** production discipline.
+
+### Tasks
+
+- Central error handling
+- Request logging
+- Status code logging
+
+---
+
+## 🛑 STOP HERE
+
+Once you finish **Milestone 6–8**, you are **DONE with HTTP in C**.
+
+No HTTPS.
+
+No HTTP/2.
+
+No performance tuning.
+
+Those belong to Go/Rust.
+
+---
+
+## 🧠 What You Will Learn (this is the point)
+
+- How HTTP actually works
+- TCP socket lifecycle
+- File descriptor management
+- Event-driven servers
+- Why frameworks exist
+
+---
+
