@@ -1,5 +1,5 @@
 #include <request.h>
-
+#include <string.h>
 int parse_request(char *request, struct request *req) {
     char *method, *url, *version, *headers, *body;
     char *request_line = strtok(request, "\r\n");
